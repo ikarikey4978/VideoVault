@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+  /* 🎨 THEME COLORS (sirf yahan change karo) */
+  :root {
+ --primary-color: #1689ba;      /* header + button */
+    --border-color: #173a76;       /* input border */
+    --focus-color: #0a0a0a;        /* input focus border */
+    --focus-shadow: rgb(13, 173, 227); /* focus glow */
+    --card-bg: #f8faf8d6;            /* card body */
+  }
+
+  /* Inputs */
+  input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  input:focus {
+    border-color: var(--focus-color);
+    box-shadow: 0 0 0 0.15rem var(--focus-shadow);
+    outline: none;
+  }
+
+  /* Button */
+  .custom-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+  }
+
+  .custom-btn:hover {
+    filter: brightness(90%);
+  }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-lg border-0" style="max-width: 420px; width: 100%; background: var(--card-bg);">
+
+    <div class="card-body p-5">
+      <h2 class="mb-4 text-center">Login</h2>
+
+      {% if form.errors %}
+        <div class="alert alert-danger text-center">
+          Invalid username or password
+        </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Username</label>
+          {{ form.username }}
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password</label>
+          {{ form.password }}
+        </div>
+
+        <button class="btn custom-btn w-100">
+          Login
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

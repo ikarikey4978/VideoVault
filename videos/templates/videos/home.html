@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+  .video-card {
+    border-radius: 10px;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .video-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  }
+  video {
+    border-radius: 8px;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+  }
+</style>
+
+<div class="row g-4">
+
+  <!-- LEFT : VIDEO LIST -->
+  <div class="col-lg-8">
+    <h4 class="mb-3">🎥 Uploaded Videos</h4>
+
+    {% if videos %}
+      {% for v in videos %}
+        <div class="card video-card mb-4 p-3">
+
+          <div class="row g-3 align-items-center">
+            <div class="col-md-5">
+              <video controls>
+                <source src="{{ v.file.url }}" type="video/mp4">
+              </video>
+            </div>
+
+            <div class="col-md-7">
+              <h5 class="mb-1">
+                <a href="{% url 'videos:detail' v.pk %}" class="text-decoration-none">
+                  {{ v.title|default:v.file.name }}
+                </a>
+              </h5>
+
+              <p class="text-muted small mb-2">
+                {{ v.description|truncatewords:20 }}
+              </p>
+
+              <p class="small mb-2">
+                👤 {{ v.uploaded_by }} <br>
+                🕒 {{ v.uploaded_at|date:"M d, Y" }} <br>
+                📦 {{ v.size }} bytes
+              </p>
+
+              {% if user.is_authenticated and user == v.uploaded_by or user.is_staff %}
+                <div class="d-flex gap-2">
+                  <a href="{% url 'videos:detail' v.pk %}"
+                     class="btn btn-sm btn-outline-primary">
+                    Details
+                  </a>
+
+                  <form method="post"
+                        action="{% url 'videos:delete' v.pk %}"
+                        onsubmit="return confirm('Delete this video?');">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-info">
+        No videos uploaded yet.
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- RIGHT : UPLOAD PANEL -->
+  <div class="col-lg-4">
+
+    {% if user.is_authenticated %}
+      <div class="card shadow-sm p-4">
+        <h5 class="mb-3 text-center">⬆️ Upload Video</h5>
+
+        <form method="post" enctype="multipart/form-data"
+              action="{% url 'videos:upload' %}">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+              <small class="text-danger">{{ form.title.errors.0 }}</small>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+              <small class="text-danger">{{ form.description.errors.0 }}</small>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Video File</label>
+            {{ form.file }}
+            {% if form.file.errors %}
+              <small class="text-danger">{{ form.file.errors.0 }}</small>
+            {% endif %}
+          </div>
+
+          <button class="btn btn-theme w-100">
+            Upload
+          </button>
+        </form>
+      </div>
+
+    {% else %}
+      <div class="card shadow-sm p-4 text-center">
+        <h5 class="mb-3">⬆️ Upload Video</h5>
+        <p class="text-muted">
+          Login required to upload videos
+        </p>
+
+        <a href="{% url 'accounts:login' %}"
+           class="btn btn-theme w-100 mb-2">
+          Login
+        </a>
+        <a href="{% url 'accounts:register' %}"
+           class="btn btn-outline-secondary w-100">
+          Register
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

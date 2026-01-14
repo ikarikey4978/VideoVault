@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+  /* 🎨 THEME COLORS (sirf yahan change karo) */
+  :root {
+    --primary-color: #1689ba;      /* header + button */
+    --border-color: #173a76;       /* input border */
+    --focus-color: #0a0a0a;        /* input focus border */
+    --focus-shadow: rgb(13, 173, 227); /* focus glow */
+    --card-bg: #f8faf8d6;            /* card body */
+  }
+
+  /* Inputs */
+  input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--focus-color);
+    box-shadow: 0 0 0 0.15rem var(--focus-shadow);
+    outline: none;
+  }
+
+  /* Header */
+  .custom-header {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  /* Button */
+  .custom-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+  }
+
+  .custom-btn:hover {
+    filter: brightness(90%);
+  }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+  <div class="card shadow-lg border-0" style="max-width: 520px; width: 100%;">
+
+    <!-- Header -->
+    <div class="card-header custom-header text-center py-3">
+      <h4 class="mb-0">Create an Account</h4>
+      <small>Join us today 🚀</small>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body p-4" style="background: var(--card-bg);">
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Username -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-dark">Username</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <small class="text-danger">{{ form.username.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-dark">Email</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <small class="text-danger">{{ form.email.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-dark">Password</label>
+          {{ form.password }}
+          {% if form.password.errors %}
+            <small class="text-danger">{{ form.password.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-dark">Confirm Password</label>
+          {{ form.confirm_password }}
+          {% if form.confirm_password.errors %}
+            <small class="text-danger">{{ form.confirm_password.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <!-- Button -->
+        <button class="btn custom-btn w-100 mt-3">
+          Register
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
